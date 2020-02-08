@@ -6,17 +6,24 @@ class Notes extends Component {
     render() {
         return this.props.notes.map((note) => (
             <NoteItem
-                key={note.id}
                 note={note}
-                toggleComplete={this.props.toggleComplete}
-                deleteNote = {this.props.deleteNote}
+                toggleCheck={this.props.toggleCheck}
+                addTodo={this.props.addTodo}
+                updateTodo={this.props.updateTodo}
+                deleteTodo={this.props.deleteTodo}
+                deleteNote={this.props.deleteNote}
             />
         ));
     }
 }
 
 Notes.propTypes = {
-    notes: PropTypes.array.isRequired
+    notes: PropTypes.array.isRequired,
+    toggleCheck: PropTypes.func.isRequired,
+    addTodo: PropTypes.func.isRequired,
+    updateTodo: PropTypes.func.isRequired,
+    deleteTodo: PropTypes.func.isRequired,
+    deleteNote: PropTypes.func.isRequired
 }
 
 export default Notes;
