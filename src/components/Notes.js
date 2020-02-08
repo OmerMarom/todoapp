@@ -7,6 +7,7 @@ class Notes extends Component {
         return this.props.notes.map((note) => (
             <NoteItem
                 note={note}
+                updateTitle={this.props.updateTitle}
                 toggleCheck={this.props.toggleCheck}
                 addTodo={this.props.addTodo}
                 updateTodo={this.props.updateTodo}
@@ -19,6 +20,7 @@ class Notes extends Component {
 
 Notes.propTypes = {
     notes: PropTypes.array.isRequired,
+    updateTitle: PropTypes.func.isRequired,
     toggleCheck: PropTypes.func.isRequired,
     addTodo: PropTypes.func.isRequired,
     updateTodo: PropTypes.func.isRequired,

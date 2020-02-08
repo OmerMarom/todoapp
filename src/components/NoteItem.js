@@ -1,40 +1,62 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Card, Input } from 'semantic-ui-react'
+import { Card, Input, Button } from 'semantic-ui-react'
 import TodoList from './TodoList';
 
 export class NoteItem extends Component {
-    state = { //todo remove from state
-        newItemString: ''
+    state = { // TODO: remove from state
+        newItemString: '',
+        titleString: this.props.note.title
     }
 
-    onChange = (e) => {
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            newItemString: e.target.value
-        })
+            titleString: nextProps.note.title
+        });
     }
 
-    onKeyDown = (e) => {
+    onChange = (string, e) => {
+        this.setState({
+            [string]: e.target.value
+        });
+    }
+
+    onKeyDown = (func, e) => {
         if (e.key === 'Enter') {
-            this.addTodoWrap(e);
+            func(e);
         }
+    }
+
+    updateTitleWrap = (e) => {
+        if (this.state.titleString) {
+            this.props.updateTitle.call(this, this.props.note.id, this.state.titleString);
+        }
+        else {
+            this.props.updateTitle.call(this, this.props.note.id, 'Title'); // TODO: Remove hardcoded strings
+        }
+        e.target.blur();
     }
 
     addTodoWrap = (e) => {
         if (this.state.newItemString) {
-            this.props.addTodo.call(this, this.props.note.id, this.state.newItemString)
+            this.props.addTodo.call(this, this.props.note.id, this.state.newItemString);
             this.setState({
                 newItemString: ''
-            })
+            });
         }
     }
 
     render() {
-        const { id, title, todos } = this.props.note;
+        const { id, todos } = this.props.note;
         return <div>
             <Card>
                 <Card.Content>
-                    <Card.Header>{title}</Card.Header>
+                    <Input
+                        value={this.state.titleString}
+                        onChange={this.onChange.bind(this, 'titleString')}
+                        onBlur={this.updateTitleWrap}
+                        onKeyDown={this.onKeyDown.bind(this, this.updateTitleWrap)}
+                    />
                     <Card.Meta>12/3/2020</Card.Meta> {/* insert date here */}
                     <Card.Description>
                         <Input
@@ -44,8 +66,8 @@ export class NoteItem extends Component {
                             placeholder='New item'
                             value={this.state.newItemString}
                             onBlur={this.addTodoWrap}
-                            onKeyDown={this.onKeyDown}
-                            onChange={this.onChange}
+                            onKeyDown={this.onKeyDown.bind(this, this.addTodoWrap)}
+                            onChange={this.onChange.bind(this, 'newItemString')}
                         />
                         <TodoList
                             todos={todos}
@@ -54,7 +76,10 @@ export class NoteItem extends Component {
                             updateTodo={this.props.updateTodo}
                             deleteTodo={this.props.deleteTodo}
                         />
-                        {/* TODO: deleteNoteComponent */}
+                        <Button
+                            icon='trash'
+                            onClick={this.props.deleteNote.bind(this, id)}>
+                        </Button>
                     </Card.Description>
                 </Card.Content>
             </Card>
@@ -64,6 +89,7 @@ export class NoteItem extends Component {
 
 NoteItem.propTypes = {
     note: PropTypes.object.isRequired,
+    updateTitle: PropTypes.func.isRequired,
     toggleCheck: PropTypes.func.isRequired,
     addTodo: PropTypes.func.isRequired,
     updateTodo: PropTypes.func.isRequired,

@@ -3,7 +3,7 @@ import NavBar from './components/layout/NavBar';
 import Notes from './components/Notes';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
-import { Button } from 'semantic-ui-react'
+import { Button, Icon } from 'semantic-ui-react'
 
 class App extends Component {
   state = {
@@ -54,53 +54,45 @@ class App extends Component {
   };
 
   addNote = () => {
-    const completeNewNote = {
+    const newNote = {
       id: this.state.notes.length + 1,
       title: 'New note',
       todos: []
     };
     this.setState({
-      //notes: this.state.notes.push(newNote) // Why does this line make notes type number?
-      notes: [this.state.notes, completeNewNote]
+      notes: [newNote, ...this.state.notes]
     });
   }
 
+  updateTitle = (noteId, titleString) => {
+    let note = this.state.notes.find((note) => noteId === note.id);
+    if (note.title !== titleString) {
+      note.title = titleString; // TODO: database access
+    }
+    this.setState(this.state);
+  }
+
   deleteNote = (id) => {
-    console.log(this.state.notes.filter(note => note.id !== id));
     this.setState({
       notes: this.state.notes.filter(note => note.id !== id)
     })
   }
 
-  // prettify
-  toggleCheck = (id, todoId) => {
-    this.setState({
-      notes: this.state.notes.map(note => {
-        if (note.id === id) {
-          note.todos = note.todos.map(todo => {
-            if (todo.todoId === todoId) {
-              todo.isChecked = !todo.isChecked
-            }
-            return todo;
-          })
-        }
-        return note;
-      })
-    });
+  toggleCheck = (todoId, noteId) => {
+    let note = this.state.notes.find((note) => noteId === note.id);
+    let todo = note.todos.find((todo => todoId === todo.todoId));
+    todo.isChecked = !todo.isChecked;
+    this.setState(this.state);
   }
 
-  addTodo = (noteId, description) => { //TODO: handle npte not found
+  addTodo = (noteId, description) => { //TODO: handle note not found
     let note = this.state.notes.find((note) => noteId === note.id);
     let todo = {
       todoId: (noteId * 100) + note.todos.length + 1,
       description,
       isChecked: false
     }
-    // note.todos = [todo, ...note.todos];
-    // note.todos = [todo].concat(note.todos);
     note.todos.unshift(todo);
-    // note.todos.push(todo);
-    console.log(note.todos);
     this.setState(this.state);
   }
 
@@ -122,15 +114,21 @@ class App extends Component {
       <div className="App">
         <div className="container">
           <NavBar />
-          <Button onClick={this.addNote}>+</Button>
           <Notes
             notes={this.state.notes}
+            updateTitle={this.updateTitle}
             toggleCheck={this.toggleCheck}
             addTodo={this.addTodo}
             updateTodo={this.updateTodo}
             deleteTodo={this.deleteTodo}
             deleteNote={this.deleteNote}
           />
+          <Button icon
+            labelPosition='left'
+            onClick={this.addNote}>
+            <Icon name='plus' />
+            New Note
+          </Button>
         </div>
       </div>
     );

@@ -49,9 +49,9 @@ export class TodoItem extends Component {
                     onKeyDown={this.onKeyDown}
                     onChange={this.onChange}
                 />
-                <Button
+                <Button 
+                    icon='cancel'
                     onClick={this.props.deleteTodo.bind(this, todoId, this.props.noteId)}>
-                    X
                 </Button>
             </div>
         );
