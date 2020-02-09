@@ -5,12 +5,12 @@ import TodoList from './TodoList';
 import {inject, observer} from "mobx-react";
 
 class NoteItem extends Component {
-    state = { // TODO: remove from state
+    state = {
         newItemString: '',
         titleString: this.props.note.title
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps) { // TODO: replace this
         this.setState({
             titleString: nextProps.note.title
         });

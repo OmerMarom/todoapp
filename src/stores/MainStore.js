@@ -1,11 +1,11 @@
-import { observable, action, computed, decorate } from 'mobx'
+import { observable, action, decorate } from 'mobx'
 
 
-export default class MainStore {
-    notes = [];
+class MainStore {
+  notes = [];
 
-    getNotes = () => {
-        let query = `
+  getNotes = () => {
+    let query = `
           query {
             notes {
               _id
@@ -21,20 +21,18 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.renderNotes);
-    }
+    this.dbOperation(query, this.renderNotes);
+  }
 
-    renderNotes = (data) => {
-        this.setState({
-            notes: data.notes.sort(
-                (note1, note2) => {
-                    return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
-                })
-        });
-    }
+  renderNotes = (data) => {
+    this.notes = data.notes.slice().sort(
+      (note1, note2) => {
+        return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
+      })
+  };
 
-    addNote = () => {
-        let query = `
+  addNote = () => {
+    let query = `
           mutation {
             createNote(newNote:{title: "New Note"}) {
               _id
@@ -42,16 +40,17 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
+    this.dbOperation(query, this.getNotes);
+  }
+
+  updateTitle = (noteId, titleString) => {
+    console.log(noteId, titleString);
+    let note = this.notes.find((note) => noteId === note._id);
+    if (note.title === titleString) {
+      return;
     }
 
-    updateTitle = (noteId, titleString) => {
-        let note = this.state.notes.find((note) => noteId === note._id);
-        if (note.title === titleString) {
-            return;
-        }
-
-        let query = `
+    let query = `
           mutation {
             updateNote(updatedNote: {
               _id: "${noteId}",
@@ -62,21 +61,21 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    deleteNote = (noteId) => {
-        let query = `
+  deleteNote = (noteId) => {
+    let query = `
           mutation {
             deleteNote(noteId: "${noteId}")
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    addTodo = (noteId, description) => { //TODO: handle note not found
-        let query = `
+  addTodo = (noteId, description) => { //TODO: handle note not found
+    let query = `
           mutation {
             createTodo(newTodo:{description: "${description}", todoNote: "${noteId}"}) {
               _id
@@ -84,11 +83,11 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    updateTodo = (todoId, description) => {
-        let query = `
+  updateTodo = (todoId, description) => {
+    let query = `
           mutation {
             updateTodoDescription(updatedTodo: {_id: "${todoId}", description: "${description}"}) {
               _id
@@ -96,11 +95,11 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    toggleCheck = (todoId, isChecked) => {
-        let query = `
+  toggleCheck = (todoId, isChecked) => {
+    let query = `
           mutation {
             toggleTodoCheck(updatedTodo: {_id: "${todoId}", isChecked: ${isChecked}}) {
               _id
@@ -108,44 +107,44 @@ export default class MainStore {
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    deleteTodo = (todoId) => {
-        let query = `
+  deleteTodo = (todoId) => {
+    let query = `
           mutation {
             deleteTodo(todoId: "${todoId}")
           }
         `;
 
-        this.dbOperation(query, this.getNotes);
-    }
+    this.dbOperation(query, this.getNotes);
+  }
 
-    dbOperation = (query, handleData) => {
-        let requestBody = {
-            query
-        };
+  dbOperation = (query, handleData) => {
+    let requestBody = {
+      query
+    };
 
-        fetch('http://localhost:80/graphql', {
-            method: 'POST',
-            body: JSON.stringify(requestBody),
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        })
-            .then(res => {
-                if (res.status !== 200 && res.status !== 201) {
-                    throw new Error('DB operation failed.\n' + query);
-                }
-                return res.json();
-            })
-            .then(resData => {
-                handleData(resData.data);
-            })
-            .catch(err => {
-                console.log(err);
-            });
-    }
+    fetch('http://localhost:80/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('DB operation failed.\n' + query);
+        }
+        return res.json();
+      })
+      .then(resData => {
+        handleData(resData.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  }
 }
 
 decorate(MainStore, {
@@ -159,3 +158,6 @@ decorate(MainStore, {
   toggleCheck: action,
   deleteTodo: action
 })
+
+const store = new MainStore();
+export default store;

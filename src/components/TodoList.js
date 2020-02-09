@@ -4,7 +4,7 @@ import TodoItem from './TodoItem'
 
 class TodoList extends Component {
     render() {
-        let sortedTodo = this.props.todos.sort((todo1, todo2)=> {
+        let sortedTodo = this.props.todos.slice().sort((todo1, todo2)=> {
             return new Date(todo1.createdAt) > new Date(todo2.createdAt) ? -1 : 1;
         });
         return sortedTodo.map((todo) => (

@@ -57,7 +57,7 @@ export class TodoItem extends Component {
                 />
                 <Button
                     icon='cancel'
-                    onClick={this.props.deleteTodo.bind(this, _id)}>
+                    onClick={store.deleteTodo.bind(this, _id)}>
                 </Button>
             </div>
         );
