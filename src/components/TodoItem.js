@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Button, Input, Checkbox } from 'semantic-ui-react'
+import { inject, observer } from "mobx-react";
 
 export class TodoItem extends Component {
     state = {
@@ -21,38 +22,40 @@ export class TodoItem extends Component {
 
     onKeyDown = (e) => {
         if (e.key === 'Enter') {
-            this.updateTodo(e);
+            this.updateTodoWrap(e);
             e.target.blur();
         }
     }
 
-    updateTodo = (e) => {
+    updateTodoWrap = (e) => {
+        const store = this.props.MainStore;
         if (this.props.todo.description === this.state.todoItemString) {
             return;
         }
         if (this.state.todoItemString.trim()) {
-            this.props.updateTodo.call(this, this.props.todo._id, e.target.value)
+            store.updateTodo.call(this, this.props.todo._id, e.target.value)
         }
         else {
-            this.props.deleteTodo.call(this, this.props.todo._id, this.props.noteId)
+            store.deleteTodo.call(this, this.props.todo._id, this.props.noteId)
         }
     }
 
     render() {
+        const store = this.props.MainStore;
         const { _id, isChecked } = this.props.todo
         return (
             <div>
                 <Checkbox
                     defaultChecked={isChecked}
-                    onChange={this.props.toggleCheck.bind(this, _id, !this.props.todo.isChecked)}
+                    onChange={store.toggleCheck.bind(this, _id, !this.props.todo.isChecked)}
                 />
                 <Input
                     value={this.state.todoItemString}
-                    onBlur={this.updateTodo}
+                    onBlur={this.updateTodoWrap}
                     onKeyDown={this.onKeyDown}
                     onChange={this.onChange}
                 />
-                <Button 
+                <Button
                     icon='cancel'
                     onClick={this.props.deleteTodo.bind(this, _id)}>
                 </Button>
@@ -64,9 +67,6 @@ export class TodoItem extends Component {
 TodoItem.propTypes = {
     todo: PropTypes.object.isRequired,
     noteId: PropTypes.number.isRequired, // TODO: Not a number - change
-    toggleCheck: PropTypes.func.isRequired,
-    updateTodo: PropTypes.func.isRequired,
-    deleteTodo: PropTypes.func.isRequired
 };
 
-export default TodoItem;
+export default inject('MainStore')(observer(TodoItem));

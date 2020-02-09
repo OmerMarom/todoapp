@@ -11,20 +11,14 @@ class TodoList extends Component {
             <TodoItem
                 todo={todo}
                 noteId={this.props.noteId}
-                toggleCheck={this.props.toggleCheck}
-                updateTodo={this.props.updateTodo}
-                deleteTodo={this.props.deleteTodo}
             />
         ));
     }
 }
 
-TodoList.propTypes = {
+TodoList.propTypes = { // what are proptypes?
     todos: PropTypes.array.isRequired,
     noteId: PropTypes.number.isRequired, // TODO: Not a number - change
-    toggleCheck: PropTypes.func.isRequired,
-    updateTodo: PropTypes.func.isRequired,
-    deleteTodo: PropTypes.func.isRequired
 }
 
 export default TodoList;
