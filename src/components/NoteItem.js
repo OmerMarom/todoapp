@@ -28,18 +28,18 @@ export class NoteItem extends Component {
     }
 
     updateTitleWrap = (e) => {
-        if (this.state.titleString) {
-            this.props.updateTitle.call(this, this.props.note.id, this.state.titleString);
+        if (this.state.titleString.trim()) {
+            this.props.updateTitle.call(this, this.props.note._id, this.state.titleString);
         }
         else {
-            this.props.updateTitle.call(this, this.props.note.id, 'Title'); // TODO: Remove hardcoded strings
+            this.props.updateTitle.call(this, this.props.note._id, 'Title'); // TODO: Remove hardcoded strings
         }
         e.target.blur();
     }
 
     addTodoWrap = (e) => {
-        if (this.state.newItemString) {
-            this.props.addTodo.call(this, this.props.note.id, this.state.newItemString);
+        if (this.state.newItemString.trim()) {
+            this.props.addTodo.call(this, this.props.note._id, this.state.newItemString);
             this.setState({
                 newItemString: ''
             });
@@ -47,7 +47,7 @@ export class NoteItem extends Component {
     }
 
     render() {
-        const { id, todos } = this.props.note;
+        const { _id, todos, createdAt } = this.props.note;
         return <div>
             <Card>
                 <Card.Content>
@@ -57,7 +57,7 @@ export class NoteItem extends Component {
                         onBlur={this.updateTitleWrap}
                         onKeyDown={this.onKeyDown.bind(this, this.updateTitleWrap)}
                     />
-                    <Card.Meta>12/3/2020</Card.Meta> {/* insert date here */}
+                    <Card.Meta>{new Date(createdAt).toLocaleDateString()}</Card.Meta> {/* TODO: date is backwards */}
                     <Card.Description>
                         <Input
                             icon='plus'
@@ -71,14 +71,14 @@ export class NoteItem extends Component {
                         />
                         <TodoList
                             todos={todos}
-                            noteId={id}
+                            noteId={_id}
                             toggleCheck={this.props.toggleCheck}
                             updateTodo={this.props.updateTodo}
                             deleteTodo={this.props.deleteTodo}
                         />
                         <Button
                             icon='trash'
-                            onClick={this.props.deleteNote.bind(this, id)}>
+                            onClick={this.props.deleteNote.bind(this, _id)}>
                         </Button>
                     </Card.Description>
                 </Card.Content>

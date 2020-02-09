@@ -7,106 +7,154 @@ import { Button, Icon } from 'semantic-ui-react'
 
 class App extends Component {
   state = {
-    notes: [
-      {
-        id: 1,
-        title: 'Note header 1',
-        todos: [{
-          todoId: 101,
-          description: 'todo item 1',
-          isChecked: false
-        },
-        {
-          todoId: 102,
-          description: 'todo item 2',
-          isChecked: false
-        }]
-      },
-      {
-        id: 2,
-        title: 'Do this',
-        todos: [{
-          todoId: 201,
-          description: 'go here',
-          isChecked: false
-        },
-        {
-          todoId: 202,
-          description: 'just do it',
-          isChecked: false
-        }]
-      },
-      {
-        id: 3,
-        title: 'Do that',
-        todos: [{
-          todoId: 301,
-          description: 'go there',
-          isChecked: false
-        },
-        {
-          todoId: 302,
-          description: 'just do that shit boi',
-          isChecked: false
-        }]
-      }
-    ]
+    notes: []
   };
 
-  addNote = () => {
-    const newNote = {
-      id: this.state.notes.length + 1,
-      title: 'New note',
-      todos: []
-    };
+  renderNotes = (data) => {
     this.setState({
-      notes: [newNote, ...this.state.notes]
+      notes: data.notes.sort(
+        (note1, note2) => {
+          return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
+        })
     });
   }
 
+  getNotes = () => {
+    let query = `
+      query {
+        notes {
+          _id
+          title
+          createdAt
+          todos {
+            _id
+            description
+            isChecked
+            createdAt
+          }
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.renderNotes);
+  }
+
+  addNote = () => {
+    let query = `
+      mutation {
+        createNote(newNote:{title: "New Note"}) {
+          _id
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
+  }
+
   updateTitle = (noteId, titleString) => {
-    let note = this.state.notes.find((note) => noteId === note.id);
-    if (note.title !== titleString) {
-      note.title = titleString; // TODO: database access
+    let note = this.state.notes.find((note) => noteId === note._id);
+    if (note.title === titleString) {
+      return;
     }
-    this.setState(this.state);
+
+    let query = `
+      mutation {
+        updateNote(updatedNote: {
+          _id: "${noteId}",
+          title: "${titleString}"
+        }) {
+          title
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
   }
 
-  deleteNote = (id) => {
-    this.setState({
-      notes: this.state.notes.filter(note => note.id !== id)
-    })
-  }
+  deleteNote = (noteId) => {
+    let query = `
+      mutation {
+        deleteNote(noteId: "${noteId}")
+      }
+    `;
 
-  toggleCheck = (todoId, noteId) => {
-    let note = this.state.notes.find((note) => noteId === note.id);
-    let todo = note.todos.find((todo => todoId === todo.todoId));
-    todo.isChecked = !todo.isChecked;
-    this.setState(this.state);
+    this.dbOperation(query, this.getNotes);
   }
 
   addTodo = (noteId, description) => { //TODO: handle note not found
-    let note = this.state.notes.find((note) => noteId === note.id);
-    let todo = {
-      todoId: (noteId * 100) + note.todos.length + 1,
-      description,
-      isChecked: false
-    }
-    note.todos.unshift(todo);
-    this.setState(this.state);
+    let query = `
+      mutation {
+        createTodo(newTodo:{description: "${description}", todoNote: "${noteId}"}) {
+          _id
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
   }
 
-  updateTodo = (todoId, noteId, e) => {
-    let note = this.state.notes.find((note) => noteId === note.id);
-    let todo = note.todos.find((todo => todoId === todo.todoId));
-    todo.description = e.target.value;
-    this.setState(this.state);
+  updateTodo = (todoId, description) => {
+    let query = `
+      mutation {
+        updateTodoDescription(updatedTodo: {_id: "${todoId}", description: "${description}"}) {
+          _id
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
   }
 
-  deleteTodo = (todoId, noteId) => {
-    let note = this.state.notes.find((note) => noteId === note.id);
-    note.todos = note.todos.filter(todo => todo.todoId !== todoId);
-    this.setState(this.state);
+  toggleCheck = (todoId, isChecked) => {
+    let query = `
+      mutation {
+        toggleTodoCheck(updatedTodo: {_id: "${todoId}", isChecked: ${isChecked}}) {
+          _id
+        }
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
+  }
+
+  deleteTodo = (todoId) => {
+    let query = `
+      mutation {
+        deleteTodo(todoId: "${todoId}")
+      }
+    `;
+
+    this.dbOperation(query, this.getNotes);
+  }
+
+  componentDidMount() {
+    this.getNotes();
+  }
+
+  dbOperation = (query, handleData) => {
+    let requestBody = {
+      query
+    };
+
+    fetch('http://localhost:80/graphql', {
+      method: 'POST',
+      body: JSON.stringify(requestBody),
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error('DB operation failed.\n' + query);
+        }
+        return res.json();
+      })
+      .then(resData => {
+        handleData(resData.data);
+      })
+      .catch(err => {
+        console.log(err);
+      });
   }
 
   render() {
@@ -128,7 +176,7 @@ class App extends Component {
             onClick={this.addNote}>
             <Icon name='plus' />
             New Note
-          </Button>
+            </Button>
         </div>
       </div>
     );

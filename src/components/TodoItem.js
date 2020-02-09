@@ -27,21 +27,24 @@ export class TodoItem extends Component {
     }
 
     updateTodo = (e) => {
-        if (this.state.todoItemString) {
-            this.props.updateTodo.call(this, this.props.todo.todoId, this.props.noteId, e)
+        if (this.props.todo.description === this.state.todoItemString) {
+            return;
+        }
+        if (this.state.todoItemString.trim()) {
+            this.props.updateTodo.call(this, this.props.todo._id, e.target.value)
         }
         else {
-            this.props.deleteTodo.call(this, this.props.todo.todoId, this.props.noteId)
+            this.props.deleteTodo.call(this, this.props.todo._id, this.props.noteId)
         }
     }
 
     render() {
-        const { todoId, isChecked } = this.props.todo
+        const { _id, isChecked } = this.props.todo
         return (
             <div>
                 <Checkbox
-                    value={isChecked}
-                    onChange={this.props.toggleCheck.bind(this, todoId, this.props.noteId)}
+                    defaultChecked={isChecked}
+                    onChange={this.props.toggleCheck.bind(this, _id, !this.props.todo.isChecked)}
                 />
                 <Input
                     value={this.state.todoItemString}
@@ -51,7 +54,7 @@ export class TodoItem extends Component {
                 />
                 <Button 
                     icon='cancel'
-                    onClick={this.props.deleteTodo.bind(this, todoId, this.props.noteId)}>
+                    onClick={this.props.deleteTodo.bind(this, _id)}>
                 </Button>
             </div>
         );

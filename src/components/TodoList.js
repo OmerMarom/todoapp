@@ -4,7 +4,10 @@ import TodoItem from './TodoItem'
 
 class TodoList extends Component {
     render() {
-        return this.props.todos.map((todo) => (
+        let sortedTodo = this.props.todos.sort((todo1, todo2)=> {
+            return new Date(todo1.createdAt) > new Date(todo2.createdAt) ? -1 : 1;
+        });
+        return sortedTodo.map((todo) => (
             <TodoItem
                 todo={todo}
                 noteId={this.props.noteId}
