@@ -10,7 +10,7 @@ interface Props {
 @observer
 class Notes extends Component<Props> {
     render() {
-        return this.props.store.notes.map((note) => (
+        return this.props.store.notes.map((note: any) => (
             <NoteItem note={note}/>
         ));
     }

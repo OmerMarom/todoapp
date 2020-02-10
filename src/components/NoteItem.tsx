@@ -17,25 +17,25 @@ class NoteItem extends Component<Props> {
         titleString: this.props.note.title
     }
 
-    componentWillReceiveProps(nextProps) { // TODO: replace this
+    componentWillReceiveProps(nextProps: Props) { // TODO: replace this
         this.setState({
             titleString: nextProps.note.title
         });
     }
 
-    onChange = (string, e) => {
+    onChange = (string: string, e: any) => {
         this.setState({
             [string]: e.target.value
         });
     }
 
-    onEnterDown = (func, e) => {
+    onEnterDown = (func: any, e: any) => {
         if (e.key === 'Enter') {
             func(e);
         }
     }
 
-    updateTitleWrap = (e) => {
+    updateTitleWrap = (e: any) => {
         if (this.state.titleString.trim()) {
             this.props.store.updateTitle(this.props.note._id, this.state.titleString);
         }
@@ -46,7 +46,7 @@ class NoteItem extends Component<Props> {
         e.target.blur();
     }
 
-    addTodoWrap = (e) => {
+    addTodoWrap = (e: any) => {
         if (this.state.newItemString.trim()) {
             this.props.store.addTodo.call(this, this.props.note._id, this.state.newItemString);
             this.setState({

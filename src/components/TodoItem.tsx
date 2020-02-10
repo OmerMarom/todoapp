@@ -16,7 +16,7 @@ export class TodoItem extends Component<Props> {
         todoCheckbox: this.props.todo.isChecked
     }
 
-    componentWillReceiveProps(nextProps) {
+    componentWillReceiveProps(nextProps: Props) {
         this.setState({
             todoItemString: nextProps.todo.description,
             todoCheckbox: nextProps.todo.isChecked
@@ -36,27 +36,27 @@ export class TodoItem extends Component<Props> {
     // }
 
 
-    toggleCheckWrap = (e) => {
+    toggleCheckWrap = (e: any) => {
         this.setState({
             todoCheckbox: !this.props.todo.isChecked
         })
         this.props.store.toggleCheck(this.props.todo._id, !this.props.todo.isChecked);
     }
 
-    onChange = (e) => {
+    onChange = (e: any) => {
         this.setState({
             todoItemString: e.target.value
         })
     }
 
-    onKeyDown = (e) => {
+    onKeyDown = (e: any) => {
         if (e.key === 'Enter') {
             this.updateTodoWrap(e);
             e.target.blur();
         }
     }
 
-    updateTodoWrap = (e) => {
+    updateTodoWrap = (e: any) => {
         if (this.props.todo.description === this.state.todoItemString) {
             return;
         }
