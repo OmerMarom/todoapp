@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
-import {Provider} from 'mobx-react';
-import MainStore from './stores/MainStore'
+import { Provider } from 'mobx-react';
+import Store from './stores/MainStore'
 
 const Root = (
-    <Provider MainStore={MainStore}>
-        <App />
+    <Provider store={Store}>
+            <App />
     </Provider>
 );
 

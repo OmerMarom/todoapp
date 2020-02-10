@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { Card, Input, Button } from 'semantic-ui-react'
 import TodoList from './TodoList';
-import {inject, observer} from "mobx-react";
+import { inject, observer } from 'mobx-react';
+import './NoteItem.css';
 
-class NoteItem extends Component {
+interface Props {
+    store?: any;
+    note: any;
+}
+
+@inject('store')
+@observer
+class NoteItem extends Component<Props> {
     state = {
         newItemString: '',
         titleString: this.props.note.title
@@ -29,31 +36,29 @@ class NoteItem extends Component {
     }
 
     updateTitleWrap = (e) => {
-        const store = this.props.MainStore;
         if (this.state.titleString.trim()) {
-            store.updateTitle.call(this, this.props.note._id, this.state.titleString);
+            this.props.store.updateTitle(this.props.note._id, this.state.titleString);
         }
         else {
-            store.updateTitle.call(this, this.props.note._id, 'Title'); // TODO: Remove hardcoded strings
+            this.props.store.updateTitle(this.props.note._id, 'Title');
+            this.setState({titleString: 'Title'}); // TODO: Remove hardcoded strings
         }
         e.target.blur();
     }
 
     addTodoWrap = (e) => {
-        const store = this.props.MainStore;
         if (this.state.newItemString.trim()) {
-            store.addTodo.call(this, this.props.note._id, this.state.newItemString);
+            this.props.store.addTodo.call(this, this.props.note._id, this.state.newItemString);
             this.setState({
                 newItemString: ''
             });
         }
     }
-
+// TODO remove style from tags
     render() {
-        const store = this.props.MainStore;
         const { _id, todos, createdAt } = this.props.note;
         return <div>
-            <Card>
+            <Card className="noteCard">
                 <Card.Content>
                     <Input
                         value={this.state.titleString}
@@ -79,7 +84,7 @@ class NoteItem extends Component {
                         />
                         <Button
                             icon='trash'
-                            onClick={store.deleteNote.bind(this, _id)}>
+                            onClick={this.props.store.deleteNote.bind(this, _id)}>
                         </Button>
                     </Card.Description>
                 </Card.Content>
@@ -88,8 +93,4 @@ class NoteItem extends Component {
     }
 }
 
-NoteItem.propTypes = {
-    note: PropTypes.object.isRequired,
-}
-
-export default inject('MainStore')(observer(NoteItem));
+export default NoteItem;
