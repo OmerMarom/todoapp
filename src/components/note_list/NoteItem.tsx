@@ -40,7 +40,7 @@ class NoteItem extends Component<Props> {
 
     onUpdateTitle = (e: any) => {
         if (!this.state.titleString.trim()) {
-            this.setState({titleString: 'Title'}); // TODO: Remove hardcoded strings
+            this.setState({titleString: ''}); // TODO: Remove hardcoded strings
         }
         this.props.store.updateTitle(this.props.note._id, this.state.titleString);
         e.target.blur();
@@ -61,12 +61,15 @@ class NoteItem extends Component<Props> {
             <Card className="noteCard">
                 <Card.Content>
                     <Input
-                        value={this.state.titleString}
+                        className="noteTitle"
+                        placeholder='Title'
+                        value={this.state.titleString.trim()}
                         onChange={this.onChange.bind(this, 'titleString')}
                         onBlur={this.onUpdateTitle}
                         onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)}
                     />
-                    <Card.Meta>
+                    <Card.Meta
+                        className="noteDate">
                         {new Date(createdAt).toLocaleDateString()}
                     </Card.Meta>  
                     <Card.Description>
@@ -80,11 +83,14 @@ class NoteItem extends Component<Props> {
                             onKeyDown={this.onEnterDown.bind(this, this.onAddTodo)}
                             onChange={this.onChange.bind(this, 'newItemString')}
                         />
-                        <TodoList
-                            todos={todos}
-                            noteId={_id}
-                        />
+                        <div className="todoListContainer">
+                            <TodoList
+                                todos={todos}
+                                noteId={_id}
+                            />
+                        </div>
                         <Button
+                            className="deleteNoteButton"
                             icon='trash'
                             onClick={this.props.store.deleteNote.bind(this, _id)}>
                         </Button>

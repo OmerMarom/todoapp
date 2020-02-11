@@ -20,12 +20,14 @@ class App extends Component<Props> {
   render() {
     return (
       <div className="App">
+        <NavBar />
+        <div className="navBarPlaceholder" />
         <div className="container">
-          <NavBar />
           <Grid centered={true}>
             <NoteList />
           </Grid>
           <Button icon
+            className="addNoteButton"
             labelPosition='left'
             onClick={this.props.store.addNote}>
             <Icon name='plus' />

@@ -84,9 +84,9 @@ class MainStore {
 
   addTodo = (noteId: String, description: String) => {
     let renderAddTodo = (data: any) => {
-      if (!data.createTodo) { 
+      if (!data.createTodo) {
         console.log('Add todo: No data retreived from DB.');
-        return; 
+        return;
       }
       const { _id, description, isChecked, todoNote } = data.createTodo;
       this.notes = this.notes.map((note) => {
@@ -108,24 +108,24 @@ class MainStore {
 
   updateTodo = (todoId: String, description: String) => {
     let renderUpdateTodo = (data: any) => {
-      if (!data.updateTodoDescription) { 
+      if (!data.updateTodoDescription) {
         console.log('Update todo: No data retreived from DB.');
-        return; 
+        return;
       }
       const { _id, description, todoNote } = data.updateTodoDescription;
       const note = this.notes.find((note) =>
         todoNote._id === note._id
       );
-      if (!note) { 
+      if (!note) {
         console.log('Update todo: Note not found.');
-        return; 
+        return;
       }
       const todo = note.todos.find((todo: any) =>
         _id === todo._id
       );
       if (!todo) {
         console.log('Update todo: Todo not found.');
-        return; 
+        return;
       }
       todo.description = description;
     }
@@ -137,7 +137,7 @@ class MainStore {
     let renderToggleCheck = (data: any) => {
       if (!data.toggleTodoCheck) {
         console.log('Toggle check: No data retreived from DB.');
-        return; 
+        return;
       }
       const { _id, isChecked, todoNote } = data.toggleTodoCheck;
       const note = this.notes.find((note) =>
@@ -145,14 +145,14 @@ class MainStore {
       );
       if (!note) {
         console.log('Toggle check: Note not found.');
-        return; 
+        return;
       }
       const todo = note.todos.find((todo: any) =>
         _id === todo._id
       );
       if (!todo) {
         console.log('Toggle check: Todo not found.');
-        return; 
+        return;
       }
       todo.isChecked = isChecked;
     }
@@ -164,14 +164,14 @@ class MainStore {
     let renderDeleteTodo = (data: any) => {
       if (!data.deleteTodo) {
         console.log('Delete todo: No data retreived from DB.');
-        return; 
+        return;
       }
       const note = this.notes.find((note) =>
         note._id === data.deleteTodo.todoNote._id
       );
       if (!note) {
         console.log('Delete todo: Note not found.');
-        return; 
+        return;
       }
       let todoDeleted: Boolean = false;
       note.todos = note.todos.filter((todo: any) => {

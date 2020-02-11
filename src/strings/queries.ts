@@ -17,7 +17,7 @@ class QueriesStrings {
 
     addNoteQuery: String = `
         mutation {
-            createNote(newNote:{title: "New Note"}) {
+            createNote {
                 _id
                 title
                 todos {

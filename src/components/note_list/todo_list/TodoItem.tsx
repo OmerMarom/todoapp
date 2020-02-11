@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Input, Checkbox } from 'semantic-ui-react'
 import { inject, observer } from 'mobx-react';
-
+import './TodoItem.css';
 interface Props {
     store?: any;
     todo: any;
@@ -49,16 +49,19 @@ class TodoItem extends Component<Props> {
     }
 
     onToggleCheck = (e: any) => {
+        let newTodoCheckBox = !this.state.todoCheckbox;
         this.setState({
-            todoCheckbox: !this.props.todo.isChecked
-        })
-        this.props.store.toggleCheck(this.props.todo._id, this.state.todoCheckbox);
+            todoCheckbox: newTodoCheckBox
+        });
+        console.log(this.state.todoCheckbox + " " + newTodoCheckBox);
+        this.props.store.toggleCheck(this.props.todo._id, newTodoCheckBox);
     }
 
     render() {
         return (
             <div>
                 <Checkbox
+                    className="todoCheckbox"
                     checked={this.state.todoCheckbox}
                     onChange={this.onToggleCheck}
                 />
@@ -69,7 +72,8 @@ class TodoItem extends Component<Props> {
                     onChange={this.onChange}
                 />
                 <Button
-                    icon='cancel'
+                    className="deleteTodoButton"
+                    circular icon='cancel'
                     onClick={this.props.store.deleteTodo.bind(this, this.props.todo._id)}>
                 </Button>
             </div>
