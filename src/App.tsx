@@ -26,13 +26,11 @@ class App extends Component<Props> {
           <Grid centered={true}>
             <NoteList />
           </Grid>
-          <Button icon
+          <Button 
+            circular icon = "plus"
             className="addNoteButton"
-            labelPosition='left'
-            onClick={this.props.store.addNote}>
-            <Icon name='plus' />
-            New Note
-          </Button>
+            onClick={this.props.store.addNote}
+          />
         </div>
       </div>
     );

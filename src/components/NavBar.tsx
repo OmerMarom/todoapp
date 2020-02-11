@@ -7,9 +7,9 @@ class NavBar extends Component {
         return (
             <Menu inverted fixed="top" className="NavBar">
                 <Container>
-                    <Menu.Item as='a' header>
+                    <Menu.Item header>
                         NotesApp
-                </Menu.Item>
+                    </Menu.Item>
                 </Container>
             </Menu>
         );

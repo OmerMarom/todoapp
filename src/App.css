@@ -21,7 +21,7 @@ a {
 }
 
 .ui.centered.grid {
-  padding: 9vh 0 9vh 0  
+  padding: 2vh 0 2vh 0  
 }
 
 .btn {
@@ -33,6 +33,10 @@ a {
   cursor: pointer;
 }
 
+.ui.checkbox {
+  vertical-align: middle
+}
+
 .ui.checkbox label:before {
   border: 1px solid rgb(112, 112, 112)!important;
 }
@@ -42,11 +46,13 @@ a {
   border-radius: .21428571rem;
 }
 
-.ui.labeled.icon.button.addNoteButton {
+.ui.icon.button.addNoteButton {
   position: fixed;
   right: 0;
   bottom: 0;
-  margin-bottom: 2%
+  margin: 0 2% 2% 0;
+  background-color: rgb(184, 72, 21);
+  color: rgb(255, 255, 255);
 }
 
 .navBarPlaceholder {

@@ -3,7 +3,8 @@
 } */
 
 input {
-    border:none!important;
+    outline:none!important;
+    border-color: rgba(255, 255, 255, 0)!important;
 }
 
 .card {
@@ -12,14 +13,23 @@ input {
     border: solid!important;
 }
 
-.noteDate {
-    margin-left: 8%;
-    font-size: 90%;
-}
-
-.ui.input.noteTitle {
+.noteTitle {
     font-size: 130%!important;
     font-weight: bold!important;
+    margin: 0 0 2% 0!important;
+} 
+
+.addTodoInput {
+    padding-left: 0!important
+}
+
+i.icon {
+    margin-right: 0!important;
+}
+
+.ui.input.noteDate {
+    font-size: 90%;
+    margin: 0;
 }
 
 .todoListContainer {
@@ -33,7 +43,7 @@ input {
 
 .deleteNoteButton {
     float: right;
-    margin: 2% 0 0 0;
+    margin: 3% 0 0 0!important;
 }
 
 .input {

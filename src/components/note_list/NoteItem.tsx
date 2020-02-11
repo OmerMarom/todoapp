@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Card, Input, Button } from 'semantic-ui-react'
+import { Card, Input, Button, Icon } from 'semantic-ui-react'
 import TodoList from './todo_list/TodoList';
 import { inject, observer } from 'mobx-react';
 import './NoteItem.css';
@@ -14,7 +14,7 @@ interface Props {
 class NoteItem extends Component<Props> {
     state = {
         newItemString: '',
-        titleString: this.props.note.title
+        titleString: this.props.note.title.trim()
     }
 
     componentWillReceiveProps(nextProps: Props) { // TODO: replace this
@@ -22,7 +22,7 @@ class NoteItem extends Component<Props> {
         // What happens when adding a new note while focus is on newNote field and text is entered
         this.setState({
             // newItemString: '',
-            titleString: nextProps.note.title 
+            titleString: nextProps.note.title.trim() 
         });
     }
 
@@ -60,10 +60,10 @@ class NoteItem extends Component<Props> {
         return <div>
             <Card className="noteCard">
                 <Card.Content>
-                    <Input
+                    <input
                         className="noteTitle"
                         placeholder='Title'
-                        value={this.state.titleString.trim()}
+                        value={this.state.titleString}
                         onChange={this.onChange.bind(this, 'titleString')}
                         onBlur={this.onUpdateTitle}
                         onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)}
@@ -73,16 +73,18 @@ class NoteItem extends Component<Props> {
                         {new Date(createdAt).toLocaleDateString()}
                     </Card.Meta>  
                     <Card.Description>
-                        <Input
-                            icon='plus'
-                            iconPosition='left'
-                            labelPosition='right'
-                            placeholder='New item'
-                            value={this.state.newItemString}
-                            onBlur={this.onAddTodo}
-                            onKeyDown={this.onEnterDown.bind(this, this.onAddTodo)}
-                            onChange={this.onChange.bind(this, 'newItemString')}
-                        />
+                        <div>
+                            <Icon name='plus' />
+                            <Input
+                                className="addTodoInput"
+                                placeholder='New item'
+                                value={this.state.newItemString}
+                                onBlur={this.onAddTodo}
+                                onKeyDown={this.onEnterDown.bind(this, this.onAddTodo)}
+                                onChange={this.onChange.bind(this, 'newItemString')}
+                            />
+                        </div>
+                        
                         <div className="todoListContainer">
                             <TodoList
                                 todos={todos}
