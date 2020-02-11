@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import NavBar from './components/layout/NavBar';
-import NoteList from './components/NoteList';
+import NavBar from './components/NavBar';
+import NoteList from './components/note_list/NoteList';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 import { Button, Grid, Icon } from 'semantic-ui-react'
@@ -11,7 +11,7 @@ interface Props {
 }
 
 @inject('store')
-@observer //TODO: explain this bithc 
+@observer //TODO: explain this
 class App extends Component<Props> {
   componentDidMount() { // When is this called?
     this.props.store.getNotes();
@@ -22,7 +22,7 @@ class App extends Component<Props> {
       <div className="App">
         <div className="container">
           <NavBar />
-          <Grid padded='vertically' centered={true}>
+          <Grid centered={true}>
             <NoteList />
           </Grid>
           <Button icon
@@ -30,7 +30,7 @@ class App extends Component<Props> {
             onClick={this.props.store.addNote}>
             <Icon name='plus' />
             New Note
-              </Button>
+          </Button>
         </div>
       </div>
     );

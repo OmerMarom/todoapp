@@ -1,4 +1,4 @@
-export class Queries {
+class QueriesStrings {
     notesQuery: String = `
         query {
             notes {
@@ -99,3 +99,6 @@ export class Queries {
         }
     `;
 }
+
+const Queries: QueriesStrings = new QueriesStrings();
+export default Queries;

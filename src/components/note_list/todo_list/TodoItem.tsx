@@ -10,37 +10,17 @@ interface Props {
 
 @inject('store')
 @observer
-export class TodoItem extends Component<Props> {
+class TodoItem extends Component<Props> {
     state = {
         todoItemString: this.props.todo.description,
         todoCheckbox: this.props.todo.isChecked
     }
 
-    componentWillReceiveProps(nextProps: Props) {
+    componentWillReceiveProps(nextProps: Props) { // TODO: Replace this
         this.setState({
             todoItemString: nextProps.todo.description,
             todoCheckbox: nextProps.todo.isChecked
         });
-    }
-
-    // static getDerivedStateFromProps(nextProps, prevState) {
-    //     if (prevState.todoCheckbox !== nextProps.todoCheckbox ||
-    //         prevState.todoItemString !== nextProps.todoItemString) {
-    //         return {
-    //             todoItemString: nextProps.todo.description,
-    //             todoCheckbox: nextProps.todo.isChecked
-    //         };
-    //     }
-
-    //     return null;
-    // }
-
-
-    toggleCheckWrap = (e: any) => {
-        this.setState({
-            todoCheckbox: !this.props.todo.isChecked
-        })
-        this.props.store.toggleCheck(this.props.todo._id, !this.props.todo.isChecked);
     }
 
     onChange = (e: any) => {
@@ -49,42 +29,48 @@ export class TodoItem extends Component<Props> {
         })
     }
 
-    onKeyDown = (e: any) => {
+    onEnterDown = (e: any) => {
         if (e.key === 'Enter') {
-            this.updateTodoWrap(e);
+            this.onUpdateDescription(e);
             e.target.blur();
         }
     }
 
-    updateTodoWrap = (e: any) => {
+    onUpdateDescription = (e: any) => {
         if (this.props.todo.description === this.state.todoItemString) {
             return;
         }
         if (this.state.todoItemString.trim()) {
-            this.props.store.updateTodo(this.props.todo._id, e.target.value)
+            this.props.store.updateTodo(this.props.todo._id, this.state.todoItemString);
         }
         else {
-            this.props.store.deleteTodo(this.props.todo._id, this.props.noteId)
+            this.props.store.deleteTodo(this.props.todo._id, this.props.noteId);
         }
     }
 
+    onToggleCheck = (e: any) => {
+        this.setState({
+            todoCheckbox: !this.props.todo.isChecked
+        })
+        this.props.store.toggleCheck(this.props.todo._id, this.state.todoCheckbox);
+    }
+
     render() {
-        const { _id } = this.props.todo
         return (
             <div>
                 <Checkbox
                     checked={this.state.todoCheckbox}
-                    onChange={this.toggleCheckWrap}
+                    onChange={this.onToggleCheck}
                 />
                 <Input
                     value={this.state.todoItemString}
-                    onBlur={this.updateTodoWrap}
-                    onKeyDown={this.onKeyDown}
+                    onBlur={this.onUpdateDescription}
+                    onKeyDown={this.onEnterDown}
                     onChange={this.onChange}
                 />
                 <Button
                     icon='cancel'
-                    onClick={this.props.store.deleteTodo.bind(this, _id)}>
+                    onClick={this.props.store.deleteTodo.bind(this, this.props.todo._id)}>
                 </Button>
             </div>
         );

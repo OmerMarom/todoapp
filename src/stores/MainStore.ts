@@ -1,5 +1,5 @@
 import { observable, action, decorate } from 'mobx';
-import { Queries } from '../strings/queries';
+import Queries from '../strings/queries';
 
 class MainStore {
   notes: Array<any> = [];
@@ -18,7 +18,7 @@ class MainStore {
       }
     };
 
-    this.dbOperation((Queries as any).notesQuery, renderNotes);
+    this.dbOperation(Queries.notesQuery, renderNotes);
   }
 
   addNote = () => {
@@ -37,7 +37,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation((Queries as any).addNoteQuery, renderAddNote);
+    this.dbOperation(Queries.addNoteQuery, renderAddNote);
   }
 
   updateTitle = (noteId: String, titleString: String) => {
@@ -62,7 +62,7 @@ class MainStore {
       note.title = data.updateNoteTitle.title;
     }
 
-    this.dbOperation((Queries as any).updateTitleQuery(noteId, titleString),
+    this.dbOperation(Queries.updateTitleQuery(noteId, titleString),
       renderUpdateTitle);
   }
 
@@ -79,7 +79,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation((Queries as any).deleteNoteQuery(noteId), renderDeleteNote);
+    this.dbOperation(Queries.deleteNoteQuery(noteId), renderDeleteNote);
   }
 
   addTodo = (noteId: String, description: String) => {
@@ -102,7 +102,7 @@ class MainStore {
       })
     }
 
-    this.dbOperation((Queries as any).addTodoQuery(noteId, description),
+    this.dbOperation(Queries.addTodoQuery(noteId, description),
       renderAddTodo);
   }
 
@@ -130,7 +130,7 @@ class MainStore {
       todo.description = description;
     }
 
-    this.dbOperation((Queries as any).updatedTodoQuery(todoId, description), renderUpdateTodo);
+    this.dbOperation(Queries.updateTodoQuery(todoId, description), renderUpdateTodo);
   }
 
   toggleCheck = (todoId: String, isChecked: Boolean) => {
@@ -157,7 +157,7 @@ class MainStore {
       todo.isChecked = isChecked;
     }
 
-    this.dbOperation((Queries as any).toggleCheckQuery(todoId, isChecked), renderToggleCheck);
+    this.dbOperation(Queries.toggleCheckQuery(todoId, isChecked), renderToggleCheck);
   }
 
   deleteTodo = (todoId: String) => {
@@ -184,7 +184,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation((Queries as any).deleteTodoQuery(todoId), renderDeleteTodo);
+    this.dbOperation(Queries.deleteTodoQuery(todoId), renderDeleteTodo);
   }
 
   dbOperation = (query: String, handleData: any) => {

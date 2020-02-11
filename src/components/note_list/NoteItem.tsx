@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Card, Input, Button } from 'semantic-ui-react'
-import TodoList from './TodoList';
+import TodoList from './todo_list/TodoList';
 import { inject, observer } from 'mobx-react';
 import './NoteItem.css';
 
@@ -18,35 +18,35 @@ class NoteItem extends Component<Props> {
     }
 
     componentWillReceiveProps(nextProps: Props) { // TODO: replace this
+        // TODO: check if newItemString needs to be reset too. 
+        // What happens when adding a new note while focus is on newNote field and text is entered
         this.setState({
-            titleString: nextProps.note.title
+            // newItemString: '',
+            titleString: nextProps.note.title 
         });
     }
 
-    onChange = (string: string, e: any) => {
+    onChange = (inputString: string, e: any) => {
         this.setState({
-            [string]: e.target.value
+            [inputString]: e.target.value
         });
     }
 
-    onEnterDown = (func: any, e: any) => {
+    onEnterDown = (action: any, e: any) => {
         if (e.key === 'Enter') {
-            func(e);
+            action(e);
         }
     }
 
-    updateTitleWrap = (e: any) => {
-        if (this.state.titleString.trim()) {
-            this.props.store.updateTitle(this.props.note._id, this.state.titleString);
-        }
-        else {
-            this.props.store.updateTitle(this.props.note._id, 'Title');
+    onUpdateTitle = (e: any) => {
+        if (!this.state.titleString.trim()) {
             this.setState({titleString: 'Title'}); // TODO: Remove hardcoded strings
         }
+        this.props.store.updateTitle(this.props.note._id, this.state.titleString);
         e.target.blur();
     }
 
-    addTodoWrap = (e: any) => {
+    onAddTodo = (e: any) => {
         if (this.state.newItemString.trim()) {
             this.props.store.addTodo.call(this, this.props.note._id, this.state.newItemString);
             this.setState({
@@ -54,7 +54,7 @@ class NoteItem extends Component<Props> {
             });
         }
     }
-// TODO remove style from tags
+
     render() {
         const { _id, todos, createdAt } = this.props.note;
         return <div>
@@ -63,10 +63,12 @@ class NoteItem extends Component<Props> {
                     <Input
                         value={this.state.titleString}
                         onChange={this.onChange.bind(this, 'titleString')}
-                        onBlur={this.updateTitleWrap}
-                        onKeyDown={this.onEnterDown.bind(this, this.updateTitleWrap)}
+                        onBlur={this.onUpdateTitle}
+                        onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)}
                     />
-                    <Card.Meta>{new Date(createdAt).toLocaleDateString()}</Card.Meta> {/* TODO: date is backwards */}
+                    <Card.Meta>
+                        {new Date(createdAt).toLocaleDateString()}
+                    </Card.Meta>  
                     <Card.Description>
                         <Input
                             icon='plus'
@@ -74,8 +76,8 @@ class NoteItem extends Component<Props> {
                             labelPosition='right'
                             placeholder='New item'
                             value={this.state.newItemString}
-                            onBlur={this.addTodoWrap}
-                            onKeyDown={this.onEnterDown.bind(this, this.addTodoWrap)}
+                            onBlur={this.onAddTodo}
+                            onKeyDown={this.onEnterDown.bind(this, this.onAddTodo)}
                             onChange={this.onChange.bind(this, 'newItemString')}
                         />
                         <TodoList
