@@ -1,14 +1,5 @@
-/* .ui.card.noteCard {
-    margin: 20%;
-} */
-
-input {
-    outline:none!important;
-    border-color: rgba(255, 255, 255, 0)!important;
-}
-
 .card {
-    margin: 3% !important;
+    margin: 3% 0 !important;
     border-width: 2px!important;
     border: solid!important;
 }
@@ -44,8 +35,4 @@ i.icon {
 .deleteNoteButton {
     float: right;
     margin: 3% 0 0 0!important;
-}
-
-.input {
-    background: transparent!important;
 }

@@ -3,7 +3,7 @@ import NavBar from './components/NavBar';
 import NoteList from './components/note_list/NoteList';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
-import { Button, Grid, Icon } from 'semantic-ui-react'
+import { Button, Grid } from 'semantic-ui-react'
 import { inject, observer } from 'mobx-react';
 
 interface Props {
@@ -11,9 +11,9 @@ interface Props {
 }
 
 @inject('store')
-@observer //TODO: explain this
+@observer
 class App extends Component<Props> {
-  componentDidMount() { // When is this called?
+  componentDidMount() {
     this.props.store.getNotes();
   }
 
@@ -26,11 +26,13 @@ class App extends Component<Props> {
           <Grid centered={true}>
             <NoteList />
           </Grid>
-          <Button 
-            circular icon = "plus"
-            className="addNoteButton"
-            onClick={this.props.store.addNote}
-          />
+          { this.props.store.notes.length < 10 && 
+            <Button 
+              circular icon = "plus"
+              className="addNoteButton"
+              onClick={this.props.store.addNote}
+            /> 
+          }
         </div>
       </div>
     );
@@ -38,4 +40,3 @@ class App extends Component<Props> {
 };
 
 export default App;
-

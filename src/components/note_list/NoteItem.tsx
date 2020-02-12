@@ -17,12 +17,9 @@ class NoteItem extends Component<Props> {
         titleString: this.props.note.title.trim()
     }
 
-    componentWillReceiveProps(nextProps: Props) { // TODO: replace this
-        // TODO: check if newItemString needs to be reset too. 
-        // What happens when adding a new note while focus is on newNote field and text is entered
+    componentWillReceiveProps(nextProps: Props) {
         this.setState({
-            // newItemString: '',
-            titleString: nextProps.note.title.trim() 
+            titleString: nextProps.note.title.trim()
         });
     }
 
@@ -40,9 +37,11 @@ class NoteItem extends Component<Props> {
 
     onUpdateTitle = (e: any) => {
         if (!this.state.titleString.trim()) {
-            this.setState({titleString: ''}); // TODO: Remove hardcoded strings
+            this.setState({ titleString: '' });
         }
-        this.props.store.updateTitle(this.props.note._id, this.state.titleString);
+        else {
+            this.props.store.updateTitle(this.props.note._id, this.state.titleString);
+        }
         e.target.blur();
     }
 
@@ -60,18 +59,21 @@ class NoteItem extends Component<Props> {
         return <div>
             <Card className="noteCard">
                 <Card.Content>
-                    <input
-                        className="noteTitle"
-                        placeholder='Title'
-                        value={this.state.titleString}
+                    <div
+                        className="customInput noteTitle"
+                        dangerouslySetInnerHTML={{__html: this.state.titleString}}
+                        contentEditable={true}
+                        aria-multiline={true}
+                        data-placeholder="Title"
+                        role="textbox"
                         onChange={this.onChange.bind(this, 'titleString')}
                         onBlur={this.onUpdateTitle}
-                        onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)}
-                    />
+                        onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)} >
+                    </div>
                     <Card.Meta
                         className="noteDate">
                         {new Date(createdAt).toLocaleDateString()}
-                    </Card.Meta>  
+                    </Card.Meta>
                     <Card.Description>
                         <div>
                             <Icon name='plus' />
@@ -84,7 +86,7 @@ class NoteItem extends Component<Props> {
                                 onChange={this.onChange.bind(this, 'newItemString')}
                             />
                         </div>
-                        
+
                         <div className="todoListContainer">
                             <TodoList
                                 todos={todos}

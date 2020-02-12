@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Input, Checkbox } from 'semantic-ui-react'
+import { Button, Checkbox } from 'semantic-ui-react'
 import { inject, observer } from 'mobx-react';
 import './TodoItem.css';
+
 interface Props {
     store?: any;
     todo: any;
@@ -11,12 +12,13 @@ interface Props {
 @inject('store')
 @observer
 class TodoItem extends Component<Props> {
+
     state = {
         todoItemString: this.props.todo.description,
         todoCheckbox: this.props.todo.isChecked
     }
 
-    componentWillReceiveProps(nextProps: Props) { // TODO: Replace this
+    componentWillReceiveProps(nextProps: Props) {
         this.setState({
             todoItemString: nextProps.todo.description,
             todoCheckbox: nextProps.todo.isChecked
@@ -57,28 +59,29 @@ class TodoItem extends Component<Props> {
         this.props.store.toggleCheck(this.props.todo._id, newTodoCheckBox);
     }
 
-    render() {
-        return (
-            <div>
-                <Checkbox
-                    className="todoCheckbox"
-                    checked={this.state.todoCheckbox}
-                    onChange={this.onToggleCheck}
-                />
-                <Input
-                    value={this.state.todoItemString}
-                    onBlur={this.onUpdateDescription}
-                    onKeyDown={this.onEnterDown}
-                    onChange={this.onChange}
-                />
-                <Button
-                    className="deleteTodoButton"
-                    circular icon='cancel'
-                    onClick={this.props.store.deleteTodo.bind(this, this.props.todo._id)}>
-                </Button>
-            </div>
-        );
-    }
+render() {
+    return (
+        <div>
+            <Checkbox
+                className="todoCheckbox"
+                checked={this.state.todoCheckbox}
+                onChange={this.onToggleCheck}
+            />
+            <input
+                className="customInput"
+                value={this.state.todoItemString}
+                onBlur={this.onUpdateDescription}
+                onKeyDown={this.onEnterDown}
+                onChange={this.onChange}
+            />
+            <Button
+                className="deleteTodoButton"
+                circular icon='cancel'
+                onClick={this.props.store.deleteTodo.bind(this, this.props.todo._id)}>
+            </Button>
+        </div>
+    );
+}
 }
 
 export default TodoItem;

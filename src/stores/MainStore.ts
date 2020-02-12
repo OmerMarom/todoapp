@@ -1,5 +1,6 @@
 import { observable, action, decorate } from 'mobx';
-import Queries from '../strings/queries';
+import NoteQueries from '../queries/noteQueries';
+import TodoQueries from '../queries/todoQueries';
 
 class MainStore {
   notes: Array<any> = [];
@@ -18,7 +19,7 @@ class MainStore {
       }
     };
 
-    this.dbOperation(Queries.notesQuery, renderNotes);
+    this.dbOperation(NoteQueries.notesQuery, renderNotes);
   }
 
   addNote = () => {
@@ -37,7 +38,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation(Queries.addNoteQuery, renderAddNote);
+    this.dbOperation(NoteQueries.addNoteQuery, renderAddNote);
   }
 
   updateTitle = (noteId: String, titleString: String) => {
@@ -62,7 +63,7 @@ class MainStore {
       note.title = data.updateNoteTitle.title;
     }
 
-    this.dbOperation(Queries.updateTitleQuery(noteId, titleString),
+    this.dbOperation(NoteQueries.updateTitleQuery(noteId, titleString),
       renderUpdateTitle);
   }
 
@@ -79,7 +80,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation(Queries.deleteNoteQuery(noteId), renderDeleteNote);
+    this.dbOperation(NoteQueries.deleteNoteQuery(noteId), renderDeleteNote);
   }
 
   addTodo = (noteId: String, description: String) => {
@@ -102,7 +103,7 @@ class MainStore {
       })
     }
 
-    this.dbOperation(Queries.addTodoQuery(noteId, description),
+    this.dbOperation(TodoQueries.addTodoQuery(noteId, description),
       renderAddTodo);
   }
 
@@ -130,7 +131,7 @@ class MainStore {
       todo.description = description;
     }
 
-    this.dbOperation(Queries.updateTodoQuery(todoId, description), renderUpdateTodo);
+    this.dbOperation(TodoQueries.updateTodoQuery(todoId, description), renderUpdateTodo);
   }
 
   toggleCheck = (todoId: String, isChecked: Boolean) => {
@@ -157,7 +158,7 @@ class MainStore {
       todo.isChecked = isChecked;
     }
 
-    this.dbOperation(Queries.toggleCheckQuery(todoId, isChecked), renderToggleCheck);
+    this.dbOperation(TodoQueries.toggleCheckQuery(todoId, isChecked), renderToggleCheck);
   }
 
   deleteTodo = (todoId: String) => {
@@ -184,7 +185,7 @@ class MainStore {
       }
     }
 
-    this.dbOperation(Queries.deleteTodoQuery(todoId), renderDeleteTodo);
+    this.dbOperation(TodoQueries.deleteTodoQuery(todoId), renderDeleteTodo);
   }
 
   dbOperation = (query: String, handleData: any) => {
@@ -195,7 +196,7 @@ class MainStore {
         'Content-Type': 'application/json'
       }
     })
-      .then(res => { // TODO: consider async
+      .then(res => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('DB operation failed. \nQuery: \n' + query);
         }

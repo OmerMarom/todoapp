@@ -1,14 +1,19 @@
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+App {
+  min-width: 410px!important;
+  min-height: 450px!important;
 }
 
 body {
   font-family: Arial, Helvetica, sans-serif;
   line-height: 1.4;
   background-color: #ccede8!important;
-
+  overflow-x: visible;
+  min-width: 350px !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: run-in;
+  overflow: auto!important;
 }
 
 a {
@@ -59,6 +64,11 @@ a {
   height: 50px;
 }
 
-.btn:hover {
-  background: #666;
+.customInput {
+  outline:none!important;
+  border-color: rgba(255, 255, 255, 0)!important;
+}
+
+.customInput:empty:not(:focus):before {
+  content: attr(data-placeholder)!important;
 }
