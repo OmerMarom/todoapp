@@ -4,13 +4,13 @@ class QueriesStrings {
             notes {
                 _id
                 title
-                createdAt
                 todos {
                     _id
                     description
                     isChecked
                     createdAt
                 }
+                createdAt
             }
         }
     `;

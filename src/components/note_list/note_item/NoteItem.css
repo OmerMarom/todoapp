@@ -11,11 +11,14 @@
 } 
 
 .addTodoInput {
-    padding-left: 0!important
+    padding: 2%!important;
+    display: inline-block;
+    width: 90%;
 }
 
 i.icon {
-    margin-right: 0!important;
+    vertical-align: top;
+    margin-top: 2%!important;
 }
 
 .ui.input.noteDate {

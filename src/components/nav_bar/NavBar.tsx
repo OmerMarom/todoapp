@@ -5,7 +5,7 @@ import './NavBar.css'
 class NavBar extends Component {
     render() {
         return (
-            <Menu inverted fixed="top" className="NavBar">
+            <Menu inverted className="navBar" fixed="top">
                 <Container className="navBarContainer">
                     <Menu.Item header>
                         <Icon className="logo" name="sticky note outline"/>

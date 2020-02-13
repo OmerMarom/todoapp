@@ -1,19 +1,22 @@
 import React, { Component } from 'react'
-import { Card, Input, Button, Icon } from 'semantic-ui-react'
+import ContentEditable, { ContentEditableEvent } from 'react-contenteditable'
+import { Card, Button, Icon } from 'semantic-ui-react'
 import TodoList from './todo_list/TodoList';
 import { inject, observer } from 'mobx-react';
 import './NoteItem.css';
+import {MainStore} from '../../../stores/MainStore'
+import Note from '../../../models/Note';
 
 interface Props {
-    store?: any;
-    note: any;
+    store?: MainStore;
+    note: Note;
 }
 
 @inject('store')
 @observer
 class NoteItem extends Component<Props> {
     state = {
-        newItemString: '',
+        newTodoString: '',
         titleString: this.props.note.title.trim()
     }
 
@@ -23,13 +26,13 @@ class NoteItem extends Component<Props> {
         });
     }
 
-    onChange = (inputString: string, e: any) => {
+    onChange = (inputString: string, e: ContentEditableEvent) => {
         this.setState({
             [inputString]: e.target.value
         });
     }
 
-    onEnterDown = (action: any, e: any) => {
+    onEnterDown = (action: Function, e: React.KeyboardEvent<HTMLDivElement>) => {
         if (e.key === 'Enter') {
             action(e);
         }
@@ -39,17 +42,16 @@ class NoteItem extends Component<Props> {
         if (!this.state.titleString.trim()) {
             this.setState({ titleString: '' });
         }
-        else {
-            this.props.store.updateTitle(this.props.note._id, this.state.titleString);
-        }
+        this.props.store.updateTitle(this.props.note._id, this.state.titleString);
         e.target.blur();
     }
 
-    onAddTodo = (e: any) => {
-        if (this.state.newItemString.trim()) {
-            this.props.store.addTodo.call(this, this.props.note._id, this.state.newItemString);
+    onAddTodo = (e: React.FocusEvent<HTMLDivElement>) => {
+        e.preventDefault();
+        if (this.state.newTodoString.trim()) {
+            this.props.store.addTodo(this.props.note._id, this.state.newTodoString);
             this.setState({
-                newItemString: ''
+                newTodoString: ''
             });
         }
     }
@@ -59,17 +61,14 @@ class NoteItem extends Component<Props> {
         return <div>
             <Card className="noteCard">
                 <Card.Content>
-                    <div
+                    <ContentEditable
                         className="customInput noteTitle"
-                        dangerouslySetInnerHTML={{__html: this.state.titleString}}
-                        contentEditable={true}
-                        aria-multiline={true}
-                        data-placeholder="Title"
-                        role="textbox"
+                        html={this.state.titleString}
+                        placeholder="Title"
                         onChange={this.onChange.bind(this, 'titleString')}
                         onBlur={this.onUpdateTitle}
                         onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)} >
-                    </div>
+                    </ContentEditable>
                     <Card.Meta
                         className="noteDate">
                         {new Date(createdAt).toLocaleDateString()}
@@ -77,13 +76,13 @@ class NoteItem extends Component<Props> {
                     <Card.Description>
                         <div>
                             <Icon name='plus' />
-                            <Input
-                                className="addTodoInput"
-                                placeholder='New item'
-                                value={this.state.newItemString}
+                            <ContentEditable
+                                className="customInput addTodoInput"
+                                html={this.state.newTodoString}
+                                placeholder="New todo"
                                 onBlur={this.onAddTodo}
                                 onKeyDown={this.onEnterDown.bind(this, this.onAddTodo)}
-                                onChange={this.onChange.bind(this, 'newItemString')}
+                                onChange={this.onChange.bind(this, 'newTodoString')}
                             />
                         </div>
 
@@ -106,3 +105,4 @@ class NoteItem extends Component<Props> {
 }
 
 export default NoteItem;
+

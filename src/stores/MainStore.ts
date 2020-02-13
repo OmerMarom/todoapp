@@ -1,15 +1,19 @@
 import { observable, action, decorate } from 'mobx';
 import NoteQueries from '../queries/noteQueries';
 import TodoQueries from '../queries/todoQueries';
+import Note from '../models/Note';
+import Todo from '../models/todo';
 
-class MainStore {
-  notes: Array<any> = [];
+const serverUrl = 'http://localhost:80/graphql';
+
+export class MainStore {
+  notes: Array<Note> = [];
 
   getNotes = () => {
     let renderNotes = (data: any) => {
       if (data.notes) {
         this.notes = data.notes.slice().sort(
-          (note1: any, note2: any) => {
+          (note1: Note, note2: Note) => {
             return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
           })
       }
@@ -89,14 +93,15 @@ class MainStore {
         console.log('Add todo: No data retreived from DB.');
         return;
       }
-      const { _id, description, isChecked, todoNote } = data.createTodo;
+      const { _id, description, isChecked, todoNote, createdAt } = data.createTodo;
       this.notes = this.notes.map((note) => {
         if (note._id === todoNote._id) {
           note.todos.unshift({
             _id,
             description,
             isChecked,
-            todoNote: todoNote._id
+            todoNote: todoNote._id,
+            createdAt
           });
         }
         return note;
@@ -121,7 +126,7 @@ class MainStore {
         console.log('Update todo: Note not found.');
         return;
       }
-      const todo = note.todos.find((todo: any) =>
+      const todo = note.todos.find((todo: Todo) =>
         _id === todo._id
       );
       if (!todo) {
@@ -148,7 +153,7 @@ class MainStore {
         console.log('Toggle check: Note not found.');
         return;
       }
-      const todo = note.todos.find((todo: any) =>
+      const todo = note.todos.find((todo: Todo) =>
         _id === todo._id
       );
       if (!todo) {
@@ -175,12 +180,11 @@ class MainStore {
         return;
       }
       let todoDeleted: Boolean = false;
-      note.todos = note.todos.filter((todo: any) => {
+      note.todos = note.todos.filter((todo: Todo) => {
         todoDeleted = todoDeleted || (todo._id !== data.deleteTodo._id);
         return todo._id !== data.deleteTodo._id;
       });
-
-      if (todoDeleted) {
+      if (!todoDeleted) {
         console.log('Delete todo: Todo not found.');
       }
     }
@@ -188,21 +192,21 @@ class MainStore {
     this.dbOperation(TodoQueries.deleteTodoQuery(todoId), renderDeleteTodo);
   }
 
-  dbOperation = (query: String, handleData: any) => {
-    fetch('http://localhost:80/graphql', {
+  dbOperation = (query: String, handleData: Function) => {
+    fetch(serverUrl, {
       method: 'POST',
       body: JSON.stringify({ query }),
       headers: {
         'Content-Type': 'application/json'
       }
     })
-      .then(res => {
+      .then((res) => {
         if (res.status !== 200 && res.status !== 201) {
           throw new Error('DB operation failed. \nQuery: \n' + query);
         }
         return res.json();
       })
-      .then(resData => {
+      .then((resData) => {
         if (handleData) {
           handleData(resData.data);
         }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import App from './App';
+import App from './app/App';
 import { Provider } from 'mobx-react';
 import Store from './stores/MainStore'
 

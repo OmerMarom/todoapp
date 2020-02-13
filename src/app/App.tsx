@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import NavBar from './components/NavBar';
-import NoteList from './components/note_list/NoteList';
+import NavBar from '../components/nav_bar/NavBar';
+import NoteList from '../components/note_list/NoteList';
 import './App.css';
 import 'semantic-ui-css/semantic.min.css';
 import { Button, Grid } from 'semantic-ui-react'
 import { inject, observer } from 'mobx-react';
+import { MainStore } from '../stores/MainStore'
 
 interface Props {
-  store?: any;
+  store?: MainStore;
 }
 
 @inject('store')
@@ -19,7 +20,7 @@ class App extends Component<Props> {
 
   render() {
     return (
-      <div className="App">
+      <div className="app"> 
         <NavBar />
         <div className="navBarPlaceholder" />
         <div className="container">
