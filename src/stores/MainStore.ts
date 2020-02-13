@@ -4,7 +4,7 @@ import TodoQueries from '../queries/todoQueries';
 import Note from '../models/Note';
 import Todo from '../models/todo';
 
-const serverUrl = 'http://localhost:80/graphql';
+const serverUrl = 'https://todoprojectbackend.herokuapp.com/graphql'; 
 
 export class MainStore {
   notes: Array<Note> = [];
@@ -212,6 +212,7 @@ export class MainStore {
         }
       })
       .catch(err => {
+        console.log('DB operation failed. \nQuery: \n' + query)
         console.log(err);
       });
   }
