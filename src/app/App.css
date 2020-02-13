@@ -26,7 +26,10 @@ a {
 }
 
 .ui.centered.grid {
-  padding: 20px 0
+  padding: 20px 0;
+  display: grid;
+  justify-content: center;
+  grid-template-columns: repeat(auto-fill, 320px);
 }
 
 .btn {
@@ -37,6 +40,8 @@ a {
   padding: 7px 20px;
   cursor: pointer;
 }
+
+
 
 .ui.checkbox {
   vertical-align: middle
