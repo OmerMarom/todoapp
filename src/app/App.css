@@ -23,6 +23,8 @@ a {
 
 .container {
   padding: 0 1rem;
+  margin: 0 auto;
+  max-width:1500px;
 }
 
 .ui.centered.grid {
