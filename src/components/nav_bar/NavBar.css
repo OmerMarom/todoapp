@@ -1,0 +1,12 @@
+.navBar {
+    height: 50px;
+}
+
+.ui.container.navBarContainer {
+    margin-left: 0!important;
+    padding-left: 0!important;
+}
+
+.ui.menu .item>i.icon.logo {
+    margin-right: 10%!important;
+}

@@ -1,0 +1,41 @@
+.card {
+    margin: 3% 0 !important;
+    border-width: 2px!important;
+    border: solid!important;
+}
+
+.noteTitle {
+    font-size: 130%!important;
+    font-weight: bold!important;
+    margin: 0 0 2% 0!important;
+} 
+
+.addTodoInput {
+    padding: 2%!important;
+    display: inline-block;
+    width: 90%;
+}
+
+i.icon {
+    vertical-align: top;
+    margin-top: 2%!important;
+}
+
+.ui.input.noteDate {
+    font-size: 90%;
+    margin: 0;
+}
+
+.todoListContainer {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.ui.centered.grid {
+    text-align: left !important;
+}
+
+.deleteNoteButton {
+    float: right;
+    margin: 3% 0 0 0!important;
+}

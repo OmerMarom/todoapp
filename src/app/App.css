@@ -1,0 +1,76 @@
+app {
+  min-width: 410px!important;
+  min-height: 450px!important;
+}
+
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  line-height: 1.4;
+  background-color: #ccede8!important;
+  overflow-x: visible;
+  min-width: 350px !important;
+  width: auto !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  display: run-in;
+  overflow: auto!important;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+
+.container {
+  padding: 0 1rem;
+}
+
+.ui.centered.grid {
+  padding: 20px 0
+}
+
+.btn {
+  display: inline-block;
+  border: none;
+  background: #555;
+  color: #fff;
+  padding: 7px 20px;
+  cursor: pointer;
+}
+
+.ui.checkbox {
+  vertical-align: middle
+}
+
+.ui.checkbox label:before {
+  border: 1px solid rgb(112, 112, 112)!important;
+}
+
+.ui.checkbox label:after {
+  border: 1px solid #525252!important;
+  border-radius: .21428571rem;
+}
+
+.ui.icon.button.addNoteButton {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  margin: 0 2% 2% 0;
+  background-color: rgb(184, 72, 21);
+  color: rgb(255, 255, 255);
+}
+
+.navBarPlaceholder {
+  height: 50px;
+}
+
+.customInput {
+  outline:none!important;
+  border-color: rgba(255, 255, 255, 0)!important;
+}
+
+[contenteditable=true]:empty:before {
+  content: attr(placeholder);
+  display: block;
+  color: #aaa;
+}
