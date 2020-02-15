@@ -79,6 +79,7 @@ class TodoItem extends Component<Props> {
                     className="todoCheckbox"
                     checked={this.state.todoCheckbox}
                     onChange={this.onToggleCheck}
+                    disabled={this.props.todo.notSaved}
                 />
                 <ContentEditable
                     className="customInput todoDescription"
@@ -86,12 +87,14 @@ class TodoItem extends Component<Props> {
                     onBlur={this.onUpdateDescription}
                     onKeyDown={this.onEnterDown}
                     onChange={this.onChange}
+                    disabled={this.props.todo.notSaved}
                 />
                 <Button
                     className="deleteTodoButton"
                     circular icon='cancel'
-                    onClick={this.props.store.deleteTodo.bind(this, this.props.noteId, this.props.todo._id)}>
-                </Button>
+                    onClick={this.props.store.deleteTodo.bind(this, this.props.noteId, this.props.todo._id)}
+                    disabled={this.props.todo.notSaved}
+                />
             </div>
         );
     }

@@ -67,8 +67,8 @@ class NoteItem extends Component<Props> {
                         placeholder="Title"
                         onChange={this.onChange.bind(this, 'titleString')}
                         onBlur={this.onUpdateTitle}
-                        onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)} >
-                    </ContentEditable>
+                        onKeyDown={this.onEnterDown.bind(this, this.onUpdateTitle)}
+                    />
                     <Card.Meta
                         className="noteDate">
                         {new Date(createdAt).toLocaleDateString()}
@@ -85,7 +85,6 @@ class NoteItem extends Component<Props> {
                                 onChange={this.onChange.bind(this, 'newTodoString')}
                             />
                         </div>
-
                         <div className="todoListContainer">
                             <TodoList
                                 todos={todos}
@@ -95,8 +94,9 @@ class NoteItem extends Component<Props> {
                         <Button
                             className="deleteNoteButton"
                             icon='trash'
-                            onClick={this.props.store.deleteNote.bind(this, _id)}>
-                        </Button>
+                            onClick={this.props.store.deleteNote.bind(this, _id)}
+                            disabled={this.props.note.notSaved}    
+                        />
                     </Card.Description>
                 </Card.Content>
             </Card>

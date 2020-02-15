@@ -6,5 +6,6 @@ export default interface Todo {
     isChecked: boolean,
     todoNote: Note,
     createdAt: Date,
-    updatedAt?: Date
+    updatedAt?: Date,
+    notSaved?: boolean
 }

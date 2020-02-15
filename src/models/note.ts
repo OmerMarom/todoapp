@@ -6,4 +6,5 @@ export default interface Note {
     todos: Todo[],
     createdAt: Date,
     updatedAt?: Date
+    notSaved?: boolean
 }

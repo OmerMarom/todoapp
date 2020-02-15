@@ -3,6 +3,7 @@ import NoteQueries from '../queries/noteQueries';
 import TodoQueries from '../queries/todoQueries';
 import Note from '../models/Note';
 import Todo from '../models/todo';
+const uniqid = require('uniqid');
 
 const serverUrl = 'https://todoprojectbackend.herokuapp.com/graphql';
 
@@ -29,10 +30,11 @@ export class MainStore {
 
   renderAddNote = () => {
     this.notes.unshift({
-      _id: '',
+      _id: uniqid(),
       title: '',
       todos: [],
-      createdAt: null
+      createdAt: new Date(Date.now()),
+      notSaved: true
     });
   }
 
@@ -44,12 +46,13 @@ export class MainStore {
         console.log('Add note: No data retreived from backend.');
         return;
       }
-      const { _id, title, createdAt } = data.createNote;
+      const { _id, createdAt } = data.createNote;
       const note = this.notes.find((note: Note) =>
-        !note._id && title === note.title
+        note.notSaved
       );
       note._id = _id;
       note.createdAt = createdAt;
+      note.notSaved = false;
     }
 
     this.dbOperation(NoteQueries.addNoteQuery, updateNoteData);
@@ -101,11 +104,12 @@ export class MainStore {
     this.notes = this.notes.map((note: Note) => {
       if (noteId === note._id) {
         note.todos.unshift({
-          _id: '',
+          _id: uniqid(),
           description,
           isChecked: false,
           todoNote: note,
-          createdAt: null
+          createdAt: new Date(Date.now()),
+          notSaved: true
         });
       }
       return note;
@@ -119,15 +123,16 @@ export class MainStore {
         console.log('Add todo: No data retreived from DB.');
         return;
       }
-      const { _id, description, todoNote, createdAt } = data.createTodo;
+      const { _id, todoNote, createdAt } = data.createTodo;
       const note = this.notes.find((note: Note) =>
         note._id === todoNote._id
       )
       const todo = note.todos.find((todo: Todo) =>
-        !note._id && description === todo.description
+        todo.notSaved
       );
       todo._id = _id;
       todo.createdAt = createdAt;
+      todo.notSaved = false;
     }
     this.dbOperation(TodoQueries.addTodoQuery(noteId, description), updateTodoData);
   }
