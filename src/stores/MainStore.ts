@@ -4,48 +4,68 @@ import TodoQueries from '../queries/todoQueries';
 import Note from '../models/Note';
 import Todo from '../models/todo';
 
-const serverUrl = 'https://todoprojectbackend.herokuapp.com/graphql'; 
+const serverUrl = 'https://todoprojectbackend.herokuapp.com/graphql';
 
 export class MainStore {
-  notes: Array<Note> = [];
+
+  notes: Note[] = [];
+
+  renderNotes = (data: any) => {
+    if (data.notes) {
+      this.notes = data.notes.slice().sort(
+        (note1: Note, note2: Note) => {
+          return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
+        })
+    }
+    else {
+      console.log('Get notes: No data retreived from backend.');
+      return;
+    }
+  };
 
   getNotes = () => {
-    let renderNotes = (data: any) => {
-      if (data.notes) {
-        this.notes = data.notes.slice().sort(
-          (note1: Note, note2: Note) => {
-            return new Date(note1.createdAt) > new Date(note2.createdAt) ? -1 : 1;
-          })
-      }
-      else {
-        console.log('Get notes: No data retreived from backend.');
-        return;
-      }
-    };
+    this.dbOperation(NoteQueries.notesQuery, this.renderNotes);
+  }
 
-    this.dbOperation(NoteQueries.notesQuery, renderNotes);
+  renderAddNote = () => {
+    this.notes.unshift({
+      _id: '',
+      title: '',
+      todos: [],
+      createdAt: null
+    });
   }
 
   addNote = () => {
-    let renderAddNote = (data: any) => {
-      if (data.createNote) {
-        this.notes.unshift({
-          _id: data.createNote._id,
-          title: data.createNote.title,
-          todos: data.createNote.todos,
-          createdAt: data.createNote.createdAt
-        });
-      }
-      else {
+    this.renderAddNote();
+
+    let updateNoteData = (data: any) => {
+      if (!data.createNote) {
         console.log('Add note: No data retreived from backend.');
         return;
       }
+      const { _id, title, createdAt } = data.createNote;
+      const note = this.notes.find((note: Note) =>
+        !note._id && title === note.title
+      );
+      note._id = _id;
+      note.createdAt = createdAt;
     }
 
-    this.dbOperation(NoteQueries.addNoteQuery, renderAddNote);
+    this.dbOperation(NoteQueries.addNoteQuery, updateNoteData);
   }
 
-  updateTitle = (noteId: String, titleString: String) => {
+  renderUpdateTitle = (noteId: string, title: string) => {
+    let note = this.notes.find((note: Note) =>
+      noteId === note._id
+    );
+    if (!note) {
+      console.log('Update title: note not found.');
+    }
+    note.title = title;
+  }
+
+  updateTitle = (noteId: string, titleString: string) => {
     let note = this.notes.find((note) =>
       noteId === note._id
     );
@@ -57,142 +77,103 @@ export class MainStore {
       return;
     }
 
-    let renderUpdateTitle = (data: any) => {
-      let note = this.notes.find((note) =>
-        data.updateNoteTitle._id === note._id
-      );
-      if (!note) {
-        console.log('Update title: note not found.');
-      }
-      note.title = data.updateNoteTitle.title;
-    }
-
-    this.dbOperation(NoteQueries.updateTitleQuery(noteId, titleString),
-      renderUpdateTitle);
+    this.renderUpdateTitle(noteId, titleString);
+    this.dbOperation(NoteQueries.updateTitleQuery(noteId, titleString));
   }
 
-  deleteNote = (noteId: String) => {
-    let renderDeleteNote = (data: any) => {
-      if (data.deleteNote) {
-        this.notes = this.notes.filter((note) =>
-          note._id !== data.deleteNote._id
-        );
-      }
-      else {
-        console.log('Delete note: No data retreived from DB.');
-        return;
-      }
+  renderDeleteNote = (noteId: string) => {
+    let deleted: Boolean = false;
+    this.notes = this.notes.filter((note: Note) => {
+      deleted = deleted || noteId !== note._id;
+      return noteId !== note._id
+    });
+    if (!deleted) {
+      console.log('Delete title: note not found.');
     }
-
-    this.dbOperation(NoteQueries.deleteNoteQuery(noteId), renderDeleteNote);
   }
 
-  addTodo = (noteId: String, description: String) => {
-    let renderAddTodo = (data: any) => {
+  deleteNote = (noteId: string) => {
+    this.renderDeleteNote(noteId);
+    this.dbOperation(NoteQueries.deleteNoteQuery(noteId));
+  }
+
+  renderAddTodo = (noteId: string, description: string) => {
+    this.notes = this.notes.map((note: Note) => {
+      if (noteId === note._id) {
+        note.todos.unshift({
+          _id: '',
+          description,
+          isChecked: false,
+          todoNote: note,
+          createdAt: null
+        });
+      }
+      return note;
+    })
+  }
+
+  addTodo = (noteId: string, description: string) => {
+    this.renderAddTodo(noteId, description);
+    let updateTodoData = (data: any) => {
       if (!data.createTodo) {
         console.log('Add todo: No data retreived from DB.');
         return;
       }
-      const { _id, description, isChecked, todoNote, createdAt } = data.createTodo;
-      this.notes = this.notes.map((note) => {
-        if (note._id === todoNote._id) {
-          note.todos.unshift({
-            _id,
-            description,
-            isChecked,
-            todoNote: todoNote._id,
-            createdAt
-          });
-        }
-        return note;
-      })
-    }
-
-    this.dbOperation(TodoQueries.addTodoQuery(noteId, description),
-      renderAddTodo);
-  }
-
-  updateTodo = (todoId: String, description: String) => {
-    let renderUpdateTodo = (data: any) => {
-      if (!data.updateTodoDescription) {
-        console.log('Update todo: No data retreived from DB.');
-        return;
-      }
-      const { _id, description, todoNote } = data.updateTodoDescription;
-      const note = this.notes.find((note) =>
-        todoNote._id === note._id
-      );
-      if (!note) {
-        console.log('Update todo: Note not found.');
-        return;
-      }
+      const { _id, description, todoNote, createdAt } = data.createTodo;
+      const note = this.notes.find((note: Note) =>
+        note._id === todoNote._id
+      )
       const todo = note.todos.find((todo: Todo) =>
-        _id === todo._id
+        !note._id && description === todo.description
       );
-      if (!todo) {
-        console.log('Update todo: Todo not found.');
-        return;
-      }
-      todo.description = description;
+      todo._id = _id;
+      todo.createdAt = createdAt;
     }
-
-    this.dbOperation(TodoQueries.updateTodoQuery(todoId, description), renderUpdateTodo);
+    this.dbOperation(TodoQueries.addTodoQuery(noteId, description), updateTodoData);
   }
 
-  toggleCheck = (todoId: String, isChecked: Boolean) => {
-    let renderToggleCheck = (data: any) => {
-      if (!data.toggleTodoCheck) {
-        console.log('Toggle check: No data retreived from DB.');
-        return;
-      }
-      const { _id, isChecked, todoNote } = data.toggleTodoCheck;
-      const note = this.notes.find((note) =>
-        todoNote._id === note._id
-      );
-      if (!note) {
-        console.log('Toggle check: Note not found.');
-        return;
-      }
-      const todo = note.todos.find((todo: Todo) =>
-        _id === todo._id
-      );
-      if (!todo) {
-        console.log('Toggle check: Todo not found.');
-        return;
-      }
-      todo.isChecked = isChecked;
+  renderUpdateTodo = (noteId: string, updatedTodo: Todo) => {
+    const note = this.notes.find((note: Note) =>
+      noteId === note._id
+    );
+    if (!note) {
+      console.log('Update todo: Note not found.');
+      return;
     }
-
-    this.dbOperation(TodoQueries.toggleCheckQuery(todoId, isChecked), renderToggleCheck);
+    note.todos = note.todos.map((todo: Todo) => {
+      return (todo._id === updatedTodo._id) ? updatedTodo : todo;
+    });
   }
 
-  deleteTodo = (todoId: String) => {
-    let renderDeleteTodo = (data: any) => {
-      if (!data.deleteTodo) {
-        console.log('Delete todo: No data retreived from DB.');
-        return;
-      }
-      const note = this.notes.find((note) =>
-        note._id === data.deleteTodo.todoNote._id
-      );
-      if (!note) {
-        console.log('Delete todo: Note not found.');
-        return;
-      }
-      let todoDeleted: Boolean = false;
-      note.todos = note.todos.filter((todo: Todo) => {
-        todoDeleted = todoDeleted || (todo._id !== data.deleteTodo._id);
-        return todo._id !== data.deleteTodo._id;
-      });
-      if (!todoDeleted) {
-        console.log('Delete todo: Todo not found.');
-      }
-    }
-
-    this.dbOperation(TodoQueries.deleteTodoQuery(todoId), renderDeleteTodo);
+  updateTodo = (noteId: string, todo: Todo) => {
+    this.renderUpdateTodo(noteId, todo);
+    this.dbOperation(TodoQueries.updateTodoQuery(todo._id, todo.description, todo.isChecked));
   }
 
-  dbOperation = (query: String, handleData: Function) => {
+  renderDeleteTodo = (noteId: string, todoId: string) => {
+    const note = this.notes.find((note) =>
+      noteId === note._id
+    );
+    if (!note) {
+      console.log('Delete todo: Note not found.');
+      return;
+    }
+    let deleted: Boolean = false;
+    note.todos = note.todos.filter((todo: Todo) => {
+      deleted = deleted || (todoId !== todo._id);
+      return todoId !== todo._id;
+    });
+    if (!deleted) {
+      console.log('Delete todo: Todo not found.');
+    }
+  }
+
+  deleteTodo = (noteId: string, todoId: string) => {
+    this.renderDeleteTodo(noteId, todoId);
+    this.dbOperation(TodoQueries.deleteTodoQuery(todoId), null);
+  }
+
+  dbOperation = (query: String, handleData?: Function) => {
     fetch(serverUrl, {
       method: 'POST',
       body: JSON.stringify({ query }),
@@ -226,7 +207,6 @@ decorate(MainStore, {
   deleteNote: action,
   addTodo: action,
   updateTodo: action,
-  toggleCheck: action,
   deleteTodo: action
 })
 

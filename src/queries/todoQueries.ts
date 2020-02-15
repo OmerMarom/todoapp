@@ -1,5 +1,5 @@
-class QueriesStrings {
-    addTodoQuery = (noteId: String, description: String): String => `
+class Queriesstrings {
+    addTodoQuery = (noteId: string, description: string): string => `
     mutation {
         createTodo(newTodo:{description: "${description}", todoNote: "${noteId}"}) {
             _id
@@ -12,9 +12,9 @@ class QueriesStrings {
     }
 `;
 
-updateTodoQuery = (todoId: String, description: String): String => `
+updateTodoQuery = (todoId: string, description: string, isChecked: Boolean): string => `
     mutation {
-        updateTodoDescription(updatedTodo: {_id: "${todoId}", description: "${description}"}) {
+        updateTodo(updatedTodo: {_id: "${todoId}", description: "${description}", isChecked: ${isChecked}}) {
             _id
             description
             todoNote {
@@ -24,19 +24,7 @@ updateTodoQuery = (todoId: String, description: String): String => `
     }
 `;
 
-toggleCheckQuery = (todoId: String, isChecked: Boolean): String => `
-    mutation {
-        toggleTodoCheck(updatedTodo: {_id: "${todoId}", isChecked: ${isChecked}}) {
-            _id
-            isChecked
-            todoNote {
-                _id
-            }
-        }
-    }
-`;
-
-deleteTodoQuery = (todoId: String): String => `
+deleteTodoQuery = (todoId: string): string => `
     mutation {
         deleteTodo(todoId: "${todoId}") {
             _id
@@ -48,5 +36,5 @@ deleteTodoQuery = (todoId: String): String => `
 `;
 }
 
-const Queries: QueriesStrings = new QueriesStrings();
+const Queries: Queriesstrings = new Queriesstrings();
 export default Queries;
