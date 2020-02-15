@@ -4,7 +4,7 @@ import Todo from '../../../../models/todo';
 
 interface Props {
     todos: Todo[];
-    noteId: String;
+    noteId: string;
 }  
 
 class TodoList extends Component<Props> {

@@ -9,7 +9,7 @@ import Todo from '../../../../../models/todo';
 interface Props {
     store?: MainStore;
     todo: Todo;
-    noteId: String;
+    noteId: string;
 }
 
 const enterKey: string = 'Enter';
@@ -38,29 +38,38 @@ class TodoItem extends Component<Props> {
     onEnterDown = (e: any) => {
         if (e.key === enterKey) {
             e.preventDefault();
-            this.onUpdateDescription(e);
+            this.onUpdateDescription();
             e.target.blur();
         }
     }
 
-    onUpdateDescription = (e: React.FocusEvent<HTMLDivElement>) => {
+    onUpdateDescription = () => {
         if (this.props.todo.description === this.state.todoDescription) {
             return;
         }
         if (this.state.todoDescription.trim()) {
-            this.props.store.updateTodo(this.props.todo._id, this.state.todoDescription);
+            this.updateTodo(this.state.todoCheckbox);
         }
         else {
-            this.props.store.deleteTodo(this.props.todo._id);
+            this.props.store.deleteTodo(this.props.noteId, this.props.todo._id);
         }
     }
 
-    onToggleCheck = (e: React.FormEvent<HTMLInputElement>) => {
+    onToggleCheck = () => {
         let newTodoCheckBox = !this.state.todoCheckbox;
         this.setState({
             todoCheckbox: newTodoCheckBox
         });
-        this.props.store.toggleCheck(this.props.todo._id, newTodoCheckBox);
+        this.updateTodo(newTodoCheckBox);
+    }
+
+    updateTodo = (isChecked: boolean) => {
+        let updateTodo: Todo = {
+            ...this.props.todo,
+            description: this.state.todoDescription,
+            isChecked
+        }
+        this.props.store.updateTodo(this.props.noteId, updateTodo);
     }
 
     render() {
@@ -81,7 +90,7 @@ class TodoItem extends Component<Props> {
                 <Button
                     className="deleteTodoButton"
                     circular icon='cancel'
-                    onClick={this.props.store.deleteTodo.bind(this, this.props.todo._id)}>
+                    onClick={this.props.store.deleteTodo.bind(this, this.props.noteId, this.props.todo._id)}>
                 </Button>
             </div>
         );
