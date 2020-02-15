@@ -1,26 +1,26 @@
 {
   "files": {
     "main.css": "/todoapp/static/css/main.54b77e0c.chunk.css",
-    "main.js": "/todoapp/static/js/main.6a421e22.chunk.js",
-    "main.js.map": "/todoapp/static/js/main.6a421e22.chunk.js.map",
+    "main.js": "/todoapp/static/js/main.c38143c3.chunk.js",
+    "main.js.map": "/todoapp/static/js/main.c38143c3.chunk.js.map",
     "runtime-main.js": "/todoapp/static/js/runtime-main.d8a3b546.js",
     "runtime-main.js.map": "/todoapp/static/js/runtime-main.d8a3b546.js.map",
     "static/css/2.cdf30a73.chunk.css": "/todoapp/static/css/2.cdf30a73.chunk.css",
-    "static/js/2.4281bdcf.chunk.js": "/todoapp/static/js/2.4281bdcf.chunk.js",
-    "static/js/2.4281bdcf.chunk.js.map": "/todoapp/static/js/2.4281bdcf.chunk.js.map",
+    "static/js/2.33d02e48.chunk.js": "/todoapp/static/js/2.33d02e48.chunk.js",
+    "static/js/2.33d02e48.chunk.js.map": "/todoapp/static/js/2.33d02e48.chunk.js.map",
     "index.html": "/todoapp/index.html",
-    "precache-manifest.30fdb210d10e123c719c3f7eea8c8048.js": "/todoapp/precache-manifest.30fdb210d10e123c719c3f7eea8c8048.js",
+    "precache-manifest.8221f00a461888721c6b207684293636.js": "/todoapp/precache-manifest.8221f00a461888721c6b207684293636.js",
     "service-worker.js": "/todoapp/service-worker.js",
     "static/css/2.cdf30a73.chunk.css.map": "/todoapp/static/css/2.cdf30a73.chunk.css.map",
     "static/css/main.54b77e0c.chunk.css.map": "/todoapp/static/css/main.54b77e0c.chunk.css.map",
-    "static/js/2.4281bdcf.chunk.js.LICENSE.txt": "/todoapp/static/js/2.4281bdcf.chunk.js.LICENSE.txt",
+    "static/js/2.33d02e48.chunk.js.LICENSE.txt": "/todoapp/static/js/2.33d02e48.chunk.js.LICENSE.txt",
     "static/media/semantic.min.css": "/todoapp/static/media/outline-icons.ef60a4f6.woff"
   },
   "entrypoints": [
     "static/js/runtime-main.d8a3b546.js",
     "static/css/2.cdf30a73.chunk.css",
-    "static/js/2.4281bdcf.chunk.js",
+    "static/js/2.33d02e48.chunk.js",
     "static/css/main.54b77e0c.chunk.css",
-    "static/js/main.6a421e22.chunk.js"
+    "static/js/main.c38143c3.chunk.js"
   ]
 }
